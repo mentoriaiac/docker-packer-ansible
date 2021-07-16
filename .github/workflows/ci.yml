@@ -44,7 +44,7 @@ jobs:
 
   scan:
     name: Image scan
-    needs: test
+    needs: lint
     runs-on: ubuntu-18.04
     steps:
       - name: Checkout code
