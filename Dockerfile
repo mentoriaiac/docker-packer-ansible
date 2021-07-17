@@ -1,4 +1,5 @@
-FROM hashicorp/packer:light
+FROM hashicorp/packer:1.7.3
+
 LABEL maintainer="Marcelo Dellacroce Mansur <mansur.ufmg@gmail.com>"
 
 RUN set -x \
