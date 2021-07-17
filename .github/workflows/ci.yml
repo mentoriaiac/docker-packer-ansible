@@ -44,8 +44,7 @@ jobs:
 
   push:
     name: Publish image on dockerhub
-    # if: startsWith(github.ref, 'refs/tags/v')
-    if: github.ref == 'refs/heads/main'
+    if: startsWith(github.ref, 'refs/tags/v')
     needs: scan
     runs-on: ubuntu-18.04
     steps:
