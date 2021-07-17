@@ -43,7 +43,7 @@ jobs:
 #               --retry-connrefused http://localhost:9998/
 
   scan:
-    name: Image scan
+    name: Image test
     needs: lint
     runs-on: ubuntu-18.04
     steps:
@@ -52,7 +52,7 @@ jobs:
       - name: Build an image from Dockerfile
         run: |
           docker build -t packer-ansible .
-      - name: Scanear Imagem com Trivy
+      - name: Scan Image with Trivy
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'packer-ansible'
@@ -61,6 +61,9 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+      - name: Test container execution
+        run: |
+          docker run temp-docker-packer-ansible version | grep Packer
 
 # #------------------------------------------------------
 # # job 04 - Build e Push do container para o Docker Hub
