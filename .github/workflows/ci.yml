@@ -60,6 +60,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: mdmansur/${{ env.image_name }}:${GITHUB_REF#refs/*/}
+          tags: "mdmansur/${{ env.image_name }}:${GITHUB_REF#refs/*/}"
           build-args: |
             PACKER_VERSION=${{ env.packer_version }}
