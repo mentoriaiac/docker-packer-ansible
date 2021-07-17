@@ -56,11 +56,14 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set output
+        id: vars
+        run: echo "::set-output name=tag::${GITHUB_REF#refs/*/}"
       - name: Build and Push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: "mdmansur/${{ env.image_name }}:${{ GITHUB_REF#refs/*/ }}"
+          tags: "mdmansur/${{ env.image_name }}:${{ ${{ steps.vars.outputs.tag }} }}"
           build-args: |
             PACKER_VERSION=${{ env.packer_version }}
