@@ -1,4 +1,5 @@
-FROM hashicorp/packer:1.7.3
+ARG PACKER_VERSION=1.7.3
+FROM hashicorp/packer:$PACKER_VERSION
 
 LABEL maintainer="Marcelo Dellacroce Mansur <mansur.ufmg@gmail.com>"
 
