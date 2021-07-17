@@ -1,0 +1,67 @@
+name: Docker image CI
+on: [push, pull_request]
+
+env:
+  packer_version: '1.7.3'
+  image_name: 'packer-ansible'
+
+jobs:
+  lint:
+    name: Lint Dockerfile
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: lint
+        uses: luke142367/Docker-Lint-Action@v1.1.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          target: Dockerfile
+
+  scan:
+    name: Image test
+    needs: lint
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Build an image from Dockerfile
+        run: |
+          docker build -t ${{ env.image_name }} .
+      - name: Scan Image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ env.image_name }}'
+          format: 'table'
+          exit-code: '0'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+      - name: Test container execution
+        run: |
+          docker run ${{ env.image_name }} version | grep 'Packer v${{ env.packer_version }}'
+
+  push:
+    name: Publish image on dockerhub
+    if: github.ref == 'refs/heads/main'
+    needs: scan
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and Push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: mdmansur/${{ env.image_name }}:${{ env.packer_version }}
+          build-args: |
+              PACKER_VERSION=${{ env.packer_version }}
+      - name: Digest
+        run: echo "Versão usada para fazer push do Tika é -> ${{ env.packer_version }}"
