@@ -1,8 +1,9 @@
 name: Docker image CI
 on: [push, pull_request]
 
-# env:
-  # tika_version: '1.27'
+env:
+  packer_version: '1.7.3'
+  image_name: 'packer-ansible'
 
 jobs:
   lint:
@@ -51,11 +52,11 @@ jobs:
         uses: actions/checkout@v2
       - name: Build an image from Dockerfile
         run: |
-          docker build -t packer-ansible .
+          docker build -t ${{ env.image_name }} .
       - name: Scan Image with Trivy
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'packer-ansible'
+          image-ref: '${{ env.image_name }}'
           format: 'table'
           exit-code: '0'
           ignore-unfixed: true
@@ -63,7 +64,7 @@ jobs:
           severity: 'CRITICAL,HIGH'
       - name: Test container execution
         run: |
-          docker run temp-docker-packer-ansible version | grep Packer
+          docker run ${{ env.image_name }} version | grep 'Packer v${{ env.packer_version }}'
 
 # #------------------------------------------------------
 # # job 04 - Build e Push do container para o Docker Hub
