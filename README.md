@@ -25,8 +25,10 @@ The pipeline is composed of the following jobs:
 
 - Lint: Uses [Hadolint](https://github.com/hadolint/hadolint) as Dockefile linter.
 
-- Tests:
-  - Scan: Uses [Trivy](https://github.com/aquasecurity/trivy) tool to scan vulnerabilities on docker image.
-  - Execution: It's a simple test that runs this docker image and assert that it returns the correct Packer version.
+- Build: Build image and upload it as an artifact, so the following jobs can use it.
+
+- Scan: Uses [Trivy](https://github.com/aquasecurity/trivy) tool to scan vulnerabilities on docker image. **The pipeline continue in case of error on this job. It's only informative.**
+
+- Execution: It's a simple test that runs this docker image and assert that it returns the correct Packer version.
 
 - Push: Publish image on [dockerhub](https://hub.docker.com/repository/docker/mdmansur/packer-ansible). **This job is only executed when a new project tag is published**.
