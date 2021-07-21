@@ -1,6 +1,6 @@
 # docker-packer-ansible
 A docker image to run [`Packer`](https://packer.io) command line program with
-[Ansible provisioner](https://www.packer.io/docs/provisioners/ansible/ansible) .
+[Ansible provisioner](https://www.packer.io/docs/provisioners/ansible/ansible) support.
 
 ## Usage
 
