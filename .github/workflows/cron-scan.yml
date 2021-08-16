@@ -1,7 +1,7 @@
 name: Weekly image scan
 on:
   schedule:
-    - cron: '10 18 * * MON' # On Mondays
+    - cron: '15 21 * * MON' # On Mondays
 
 
 env:
